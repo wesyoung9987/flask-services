@@ -1,20 +1,46 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 
-const App = () => {
-  return (
-    <section className="section">
-      <div className="container">
-        <div className="columns">
-          <div className="column is-one-third">
-            <br/>
-            <h1 className="title is-1 is-1">All Users</h1>
-            <hr/><br/>
+import UsersList from './components/UsersList';
+
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      users: []
+    };
+  }
+
+  componentDidMount() {
+    this.getUsers();
+  }
+
+  async getUsers() {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`);
+      this.setState({ users: res.data.data.users });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  render() {
+    return (
+      <section className="section">
+        <div className="container">
+          <div className="columns">
+            <div className="column is-one-third">
+              <br/>
+              <h1 className="title is-1 is-1">All Users</h1>
+              <hr/><br/>
+              <UsersList users={this.state.users}/>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+  }
 };
 
 ReactDOM.render(
